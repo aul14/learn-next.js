@@ -4,6 +4,49 @@ import { NextResponse } from 'next/server';
 // import prisma client
 import prisma from "../../../../../prisma/client";
 
+export async function DELETE(request, { params }) {
+    // get params id
+    const id = parseFloat(params.id);
+
+    // get detail post
+    const post = await prisma.post.findUnique({
+        where: {
+            id
+        }
+    });
+
+    if (!post) {
+        //return response JSON
+        return NextResponse.json(
+            {
+                success: false,
+                message: "Data Post Not Found!",
+            },
+            {
+                status: 404,
+            }
+        );
+    }
+
+    //delete data
+    await prisma.post.delete({
+        where: {
+            id,
+        },
+    });
+
+    //return response JSON
+    return NextResponse.json(
+        {
+            success: true,
+            message: "Data Post Deleted!",
+        },
+        {
+            status: 200,
+        }
+    );
+}
+
 export async function PUT(request, { params }) {
     // get params id
     const id = parseFloat(params.id);
@@ -22,7 +65,7 @@ export async function PUT(request, { params }) {
         //return response JSON
         return NextResponse.json(
             {
-                sucess: true,
+                success: false,
                 message: "Data Post Not Found!",
                 data: null,
             },
@@ -46,7 +89,7 @@ export async function PUT(request, { params }) {
     //return response JSON
     return NextResponse.json(
         {
-            sucess: true,
+            success: true,
             message: "Data Post Updated!",
             data: post_update,
         },
@@ -71,7 +114,7 @@ export async function GET(request, { params }) {
         //return response JSON
         return NextResponse.json(
             {
-                sucess: true,
+                success: false,
                 message: "Data Post Not Found!",
                 data: null,
             },
@@ -84,7 +127,7 @@ export async function GET(request, { params }) {
     //return response JSON
     return NextResponse.json(
         {
-            sucess: true,
+            success: true,
             message: "Detail Data Post",
             data: post,
         },
